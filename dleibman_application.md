@@ -47,7 +47,7 @@ RecyclingBooster
 
 **[ ИНСТРУМЕНТЫ РАЗРАБОТКИ ]**
 
-* HTML / CSS / JS / PHP / MariaDB
+* HTML / CSS / JS / Python / Django / SQLite
 
 **[ ЭТАПЫ РАЗРАБОТКИ ]**
 
