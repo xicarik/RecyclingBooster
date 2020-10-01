@@ -15,7 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+
+from booster import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', views.index_page, name='index'),
+    path('login/', views.login_page, name='login'),
+    path('register/', views.register_page, name='register'),
+    path('logout/', views.logout_page, name='logout'),
+    path('contribution/', views.contribution_page, name='contribution'),
+    path('mylist/', views.mylist_page, name='mylist'),
+    path('generallist/', views.generallist_page, name='generallist'),
+    path('user/<int:user_id>/', views.user_page, name='userpage'),
 ]

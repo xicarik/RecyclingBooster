@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+    
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}">
+    <title>RecyclingBooster</title>
+</head>
+
+<body>
+    <header class="uk-sticky uk-background-muted uk-sticky-fixed">
+        <div class="uk-container uk-container-xlarge">
+            <nav class="uk-navbar" uk-navbar="">
+                <div class="uk-navbar-left">
+                    <a href="{% url 'index' %}" class="uk-logo">RecyclingBooster</a>
+                </div>
+                <div class="uk-navbar-center">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="{% url 'index' %}">Главная</a></li>
+                        <li><a href="#">Информация о типе отхода</a></li>
+                        <li><a href="{% url 'generallist' %}">Лента вкладов</a></li>
+                    </ul>
+                </div>
+                {% if request.user.is_authenticated %}
+                <div class="uk-navbar-right">
+                    <div>{{ user.username }} ({{ points }} балл(-ов))</div>
+                    <ul class="uk-navbar-nav">
+                        <li><a href="{% url 'contribution' %}">Получить награду</a></li>
+                        <li><a href="{% url 'mylist' %}">Мои новости</a></li>
+                        <li><a href="{% url 'logout' %}">Выйти</a></li>
+                    </ul>
+                </div>
+                {% else %}
+                <div class="uk-navbar-right">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
+                        <li><a href="{% url 'login' %}">Войти</a></li>                        
+                    </ul>
+                </div>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    
+    {% include 'messages.html' %}
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <script src="{% static 'js/uikit.min.js' %}"></script>
+    <script src="{% static 'js/uikit-icons.min.js' %}"></script>
+</body>
+
+</html>

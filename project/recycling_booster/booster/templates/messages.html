@@ -1,0 +1,14 @@
+{% if messages %}
+
+{% for message in messages %}
+
+<div class="uk-modal uk-open" uk-modal style="display: block;">
+    <div class="uk-modal-dialog uk-modal-body">
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <p>{{ message }}</p>
+    </div>
+</div>
+
+{% endfor %}
+
+{% endif %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="uk-section">
+    <div class="uk-container uk-container-xlarge">
+        <div class="uk-grid-match uk-child-width-1-4 uk-grid" uk-grid>
+        {% for new in news %}
+            <div class="uk-grid-margin">
+                <div class="uk-card uk-card-default uk-card-small">
+                    <div class="uk-card-body">
+                        <div class="uk-text-center">
+                            <h3 class="uk-card-title">{{ new.waste_type }}</h3>
+                            <p>{{ new.adress }}</p>
+                            <img src="{{ new.photo_url }}">
+                            <h3 class="uk-text-center">+1 балл</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

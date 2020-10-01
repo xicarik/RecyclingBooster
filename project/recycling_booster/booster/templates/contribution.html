@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="uk-container uk-container-xlarge">
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="uk-margin">
+            <label>Тип пластика:</label>
+            <input class="uk-input" type="text" name="waste_type" value="{{ form.data.waste_type }}">
+        </div>
+        <div class="uk-margin">
+            <label>Адрес утилизации:</label>
+            <input class="uk-input" type="text" name="adress" value="{{ form.data.adress }}">
+        </div>
+        <div class="uk-margin">
+            <label>Ссылка на фотографию:</label>
+            <input class="uk-input" type="text" name="photo_url" value="{{ form.data.photo_url }}">
+        </div>
+        <div class="uk-margin">
+            <button class="uk-button uk-button-default" name="submit">Upload</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
