@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="uk-container uk-container-xlarge">
+    <article class="uk-article">
+        <h1 class="uk-article-title">{{ article.title }}</h1>
+        <p class="uk-text-lead">{{ article.text }}</p>
+        <h4 class="uk-heading-small">Рекомендации по утилизации:</h4>
+        <p class="uk-text-lead">{{ article.recomendations }}</p>
+        <img src="{{ article.photo_url }}" uk-img>
+        <div class="uk-margin"><a class="uk-button uk-button-text" href="{{ article.source_url }}">Ссылка на первоисточник</a></div>
+    </article>
+</div>
+<div class="uk-container uk-container-xlarge">
+    {% if recyclespots %}
+        <h5 class="uk-heading-small">Пункты переработки и контейнеры:</h5>
+        <div class="uk-grid-match uk-child-width-1-4 uk-grid" uk-grid>
+            {% for recyclespot in recyclespots %}
+                <div class="uk-grid-margin">
+                    <div class="uk-card uk-card-default uk-card-small">
+                        <div class="uk-card-body">
+                            <div class="uk-text-center">
+                                {% if recyclespot.point_type == 0 %}
+                                <h3 class="uk-card-title">Контейнер</h3>
+                                {% else %}
+                                <h3 class="uk-card-title">Компания</h3>
+                                {% endif %}
+                                <p>{{ recyclespot.adress }}</p>
+                                <p><a href="{{ recyclespot.link }}">Офиц. сайт</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="uk-margin uk-button uk-button-default"><a href="{% url 'map' waste_type=article.waste_type %}">Посмотреть на карте</a></button>
+    {% endif %}
+</div>
+<div class="uk-container uk-container-xlarge">
+    <h5 class="uk-heading-small">Комментарии:</h5>
+    <form class="uk-form" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="uk-margin">
+            <input class="uk-input uk-width-5-6" type="text" name="text" placeholder="Введите комментариий">
+            <button class="uk-button uk-button-default" name="submit">Добавить</button>
+        </div>
+    </form>
+    <ul class="uk-comment-list">
+        {% for comment in comments %}
+            <article class="uk-comment uk-comment-primary uk-margin-bottom">
+                <header class="uk-comment-header">
+                    <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="{% url 'userpage' user_id=comment.user.id %}">{{ comment.user.username }}</a></h4>
+                        <p class="uk-comment-meta uk-margin-remove-top">{{ comment.creation_date }}</p>
+                    </div>
+                </header>
+                <div class="uk-comment-body">
+                    <p>{{ comment.text }}</p>
+                </div>
+            </article>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

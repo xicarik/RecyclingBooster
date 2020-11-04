@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load leaflet_tags %}
+{% load geojson_tags %}
+
+{% block head %}
+
+{% leaflet_js %}
+{% leaflet_css %}
+
+<style>
+    .leaflet-container {
+        width:  100%;
+        height: 70em;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript">
+    let collection = {{ collection|geojsonfeature:"popup_content"|safe }};
+    
+    function onEachFeature(feature, layer) {
+        if (feature.properties && feature.properties.popup_content) {
+            layer.bindPopup(feature.properties.popup_content);
+        }
+    }
+    
+    function map_init(map, options) {
+        L.geoJson(collection, {onEachFeature: onEachFeature}).addTo(map);
+    }
+</script>
+{% leaflet_map "spots" callback="window.map_init"%}
+
+{% endblock %}

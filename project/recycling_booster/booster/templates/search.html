@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="uk-section">
+    <div class="uk-container uk-container-xlarge">
+        <form class="uk-search uk-search-default">
+            {% csrf_token %}
+            <span uk-search-icon></span>
+            <input name="q" class="uk-search-input" type="search" placeholder="Поиск..." value="{{ query }}">
+        </form>
+    </div>
+    {% if articles %}
+    <div class="uk-container uk-container-xlarge uk-margin">
+        <table class="uk-table uk-table-hover uk-table-divider">
+            {% for article in articles %}
+            <tr>
+                <th><a href="{% url 'article' waste_type=article.waste_type %}">{{ article.title }}</a></th>
+                <th><button class="uk-button uk-button-default"><a href="{% url 'map' waste_type=article.waste_type %}">Пункты на карте</a></button></th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

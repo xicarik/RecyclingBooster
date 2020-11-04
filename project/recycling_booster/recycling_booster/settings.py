@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'booster',
+    'leaflet',
+    'djgeojson',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (55.75476846, 37.62346629),
+    'DEFAULT_ZOOM': 10,
+    'DEFAULT_PRECISION': 6,
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

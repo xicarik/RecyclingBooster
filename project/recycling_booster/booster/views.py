@@ -3,10 +3,16 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-from booster.forms import LoginForm, RegisterForm, ContributionForm
-from booster.models import Contribution
+from booster.forms import *
+from booster.models import *
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import *
+from django.db.models import Q
+
+import datetime
+from string import punctuation
+from fastai.vision.all import *
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -106,8 +112,155 @@ def generallist_page(request):
 def user_page(request, user_id):
     user = User.objects.filter(id=user_id)[0]
     news = Contribution.objects.filter(user=user)
-    return render(request, 'userpage.html', {\
-                                            'user': user,\
-                                            'news': news,\
-                                            'user_points': points(user),\
-                                            'points': points(request.user)})
+    return render(request, 'userpage.html', {
+        'user': user,
+        'news': news,
+        'user_points': points(user),
+        'points': points(request.user)
+    })
+
+def addpoint_page(request):
+    if not request.user.is_authenticated:
+        messages.add_message(request, messages.ERROR, 'Доступ к странице возможен только для авторизованных пользователй')
+        return redirect('index')
+    if request.method == 'POST':
+        recyclespot_form = RecycleSpotForm(request.POST)
+        if recyclespot_form.is_valid():
+            new_recyclespot = RecycleSpot()
+            new_recyclespot.geom = {'type': 'Point', 'coordinates': [
+                recyclespot_form.cleaned_data.get('longitude'), recyclespot_form.cleaned_data.get('latitude')
+            ]}
+            new_recyclespot.point_type = recyclespot_form.cleaned_data.get('point_type')
+            new_recyclespot.waste_type = recyclespot_form.cleaned_data.get('waste_type')
+            new_recyclespot.adress = recyclespot_form.cleaned_data.get('adress')
+            new_recyclespot.link = recyclespot_form.cleaned_data.get('link')
+            new_recyclespot.save()
+            messages.add_message(request, messages.SUCCESS, 'Добавлена новая точка на карте')
+            return render(request, 'addpoint.html', {'form': recyclespot_form, 'points': points(request.user)})
+        messages.add_message(request, messages.ERROR, 'Некорректные данные в форме')
+    return render(request, 'addpoint.html', {'form': {}, 'points': points(request.user)})
+
+def article_page(request, waste_type):
+    article = Article.objects.filter(waste_type=waste_type)[0]
+    comments = Comment.objects.filter(waste_type=waste_type)
+    recyclespots = RecycleSpot.objects.filter(waste_type=waste_type)
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.add_message(request, messages.ERROR, 'Публикация комментариев возможна только для авторизованных пользователй')
+            return redirect('index')
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.waste_type = waste_type
+            new_comment.user = request.user
+            new_comment.creation_date = datetime.datetime.now()
+            new_comment.save()
+            messages.add_message(request, messages.SUCCESS, 'Комментарий опубликован')
+            comments = Comment.objects.filter(waste_type=waste_type)
+            return render(request, 'article.html', {
+                'user': request.user,
+                'article': article,
+                'comments': comments,
+                'recyclespots': recyclespots,
+                'points': points(request.user),
+            })
+        messages.add_message(request, messages.ERROR, 'Некорректные данные в форме')
+    return render(request, 'article.html', {
+        'user': request.user,
+        'article': article,
+        'comments': comments,
+        'recyclespots': recyclespots,
+        'points': points(request.user),
+    })
+
+def search_page(request):
+    query = request.GET.get('q')
+    if query:
+        for char in punctuation:
+            query = query.replace(char, ' ')
+        query = query.split()
+        if not query:
+            return render(request, 'search.html', {
+                'user': request.user,
+                'points': points(request.user),
+            })
+        patterns = Q(title__contains=query[0]) | Q(text__contains=query[0])
+        for i in range(1, len(query)):
+            patterns |= Q(title__contains=query[i]) | Q(text__contains=query[i])
+        articles = Article.objects.filter(patterns)
+        return render(request, 'search.html', {
+            'user': request.user,
+            'points': points(request.user),
+            'query': request.GET.get('q'),
+            'articles': articles,
+        })
+    return render(request, 'search.html', {
+        'user': request.user,
+        'points': points(request.user),
+    })
+
+def map_page(request, waste_type):
+    collection = 0
+    if waste_type < 0 or waste_type > 7:
+        collection = RecycleSpot.objects.all()
+    else:
+        collection = RecycleSpot.objects.filter(waste_type=waste_type)
+    return render(request, 'map.html', {
+        'user': request.user,
+        'points': points(request.user),
+        'collection': collection,
+    })
+
+def recognize_page(request):
+    if request.method == 'POST':
+        if 'image' in request.FILES and request.FILES['image']:
+            trans = [
+                'Не пластик',
+                '1-PET Полиэтилен',
+                '2-PE-HD Полиэтилен высокой плотности',
+                '3-PVC Поливинилхлорид',
+                '4-PE-LD Полиэтилен низкой плотности',
+                '5-PP Полипропилен',
+                '6-PS Полистирол',
+                '7 Другие пластики',
+            ]
+            learn = load_learner('booster/neuro/trained_model.pkl')
+            image = request.FILES['image']
+            fs = FileSystemStorage()
+            filename = fs.save(image.name, image)
+            formats = (
+                '.jpg', '.JPG',
+                '.JPEG', '.jpeg',
+                '.png', '.PNG',
+                '.GIF', '.gif',
+                '.tiff', '.TIFF',
+                '.bmp', '.BMP',
+                '.psd', '.PSD',
+            )
+            alphabet = ("а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о",
+                        "п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я")
+            if any(alpha in filename for alpha in alphabet):
+                messages.add_message(request, messages.ERROR, 'В названии файла не должно быть русских букв')
+                return render(request, 'recognize.html', {
+                    'user': request.user,
+                    'points': points(request.user),
+                })
+            if not any(pattern in filename for pattern in formats):
+                messages.add_message(request, messages.ERROR, 'Некорретный формат')
+                return render(request, 'recognize.html', {
+                    'user': request.user,
+                    'points': points(request.user),
+                })
+            result = learn.predict(fs.url(filename)[1:])
+            messages.add_message(request, messages.SUCCESS, f'Результат распознавания: {trans[int(result[0])]}')
+            if result[0] == '0':
+                return render(request, 'recognize.html', {
+                    'user': request.user,
+                    'points': points(request.user),
+                })
+            return redirect('article', waste_type=int(result[0]))
+        messages.add_message(request, messages.ERROR, 'Некорректные данные в форме')
+    return render(request, 'recognize.html', {
+        'user': request.user,
+        'points': points(request.user),
+    })

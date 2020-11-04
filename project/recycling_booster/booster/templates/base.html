@@ -9,6 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}">
     <title>RecyclingBooster</title>
+    {% block head %}
+    {% endblock %}
 </head>
 
 <body>
@@ -17,12 +19,13 @@
             <nav class="uk-navbar" uk-navbar="">
                 <div class="uk-navbar-left">
                     <a href="{% url 'index' %}" class="uk-logo">RecyclingBooster</a>
-                </div>
-                <div class="uk-navbar-center">
                     <ul class="uk-navbar-nav">
                         <li><a href="{% url 'index' %}">Главная</a></li>
-                        <li><a href="#">Информация о типе отхода</a></li>
-                        <li><a href="{% url 'generallist' %}">Лента вкладов</a></li>
+                        <li><a href="{% url 'search' %}">Поиск</a></li>
+                        <li><a href="{% url 'recognize' %}">Распознать</a></li>
+                        <li><a href="{% url 'addpoint' %}">Добавить точку</a></li>
+                        <li><a href="{% url 'map' waste_type=8 %}">Карта</a></li>
+                        <li><a href="{% url 'generallist' %}">Лента</a></li>
                     </ul>
                 </div>
                 {% if request.user.is_authenticated %}

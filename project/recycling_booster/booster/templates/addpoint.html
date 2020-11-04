@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="uk-container uk-container-xlarge">
+    <form class="uk-form" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="uk-margin">
+            <label>Широта:</label>
+            <input class="uk-input" type="number" step="0.00000001" name="latitude" value="{{ form.data.latitude }}">
+        </div>
+        <div class="uk-margin">
+            <label>Долгота:</label>
+            <input class="uk-input" type="number" step="0.00000001" name="longitude" value="{{ form.data.longitude }}">
+        </div>
+        <p>Для определения координат воспользуйтесь <a target="_blank" rel="noopener noreferrer" href="http://dimik.github.io/ymaps/examples/location-tool/">этим сайтом</a></p>
+        <div class="uk-margin">
+            <label>Тип новой точки:</label>
+            <input class="uk-radio" type="radio" name="point_type" id="container" value="0">
+            <label for="container">Контейнер</label>
+            <input class="uk-radio" type="radio" name="point_type" id="factory" value="1">
+            <label for="factory">Пункт приема</label>
+        </div>
+        <div class="uk-margin">
+            <label>Тип пластика:</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type0" value="0">
+            <label for="type0">Не пластик</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type1" value="1">
+            <label for="type1">1-PET Полиэтилен</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type2" value="2">
+            <label for="type2">2-PE-HD Полиэтилен высокой плотности</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type3" value="3">
+            <label for="type3">3-PVC Поливинилхлорид</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type4" value="4">
+            <label for="type4">4-PE-LD Полиэтилен низкой плотности</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type5" value="5">
+            <label for="type5">5-PP Полипропилен</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type6" value="6">
+            <label for="type6">6-PS Полистирол</label>
+            <input class="uk-radio" type="radio" name="waste_type" id="type7" value="7">
+            <label for="type7">7 Другие пластики</label>
+        </div>
+        <div class="uk-margin">
+            <label>Адрес:</label>
+            <input class="uk-input" type="text" name="adress" value="{{ form.data.adress }}">
+        </div>
+        <div class="uk-margin">
+            <label>Ссылка:</label>
+            <input class="uk-input" type="text" name="link" value="{{ form.data.link }}">
+        </div>
+        <div class="uk-margin">
+            <button class="uk-button uk-button-default" name="submit">Добавить</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -30,4 +30,9 @@ urlpatterns = [
     path('mylist/', views.mylist_page, name='mylist'),
     path('generallist/', views.generallist_page, name='generallist'),
     path('user/<int:user_id>/', views.user_page, name='userpage'),
+    path('addpoint/', views.addpoint_page, name='addpoint'),
+    path('article/<int:waste_type>/', views.article_page, name='article'),
+    path('search/', views.search_page, name='search'),
+    path('map/<int:waste_type>/', views.map_page, name='map'),
+    path('recognize/', views.recognize_page, name='recognize'),
 ]
