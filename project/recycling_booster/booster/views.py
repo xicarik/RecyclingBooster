@@ -160,7 +160,7 @@ def article_page(request, waste_type):
             new_comment = comment_form.save(commit=False)
             new_comment.waste_type = waste_type
             new_comment.user = request.user
-            new_comment.creation_date = datetime.datetime.now()
+            new_comment.creation_date = datetimes.now()
             new_comment.save()
             messages.add_message(request, messages.SUCCESS, 'Комментарий опубликован')
             comments = Comment.objects.filter(waste_type=waste_type)
