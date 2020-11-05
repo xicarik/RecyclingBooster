@@ -51,7 +51,11 @@ def register_page(request):
             if try_user:
                 messages.add_message(request, messages.ERROR, 'Пользователь уже существует')
                 return render(request, 'auth/register.html', {})
-            user = User.objects.create_user(username, password=password)
+            try:
+                user = User.objects.create_user(username, password=password)
+            except:
+                messages.add_message(request, messages.ERROR, 'Логин уже используется')
+                return render(request, 'auth/register.html', {})
             user.save()
             login(request, user)
             messages.add_message(request, messages.SUCCESS, 'Успешная регистрация')

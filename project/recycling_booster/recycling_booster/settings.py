@@ -25,7 +25,7 @@ SECRET_KEY = '67xie0hq%f!e)xb&jg6g$c9yxvx^1klsgc0lb$e%gdeern=poh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['recyclingbooster.herokuapp.com', '127.0.0.1']
+#ALLOWED_HOSTS = ['recyclingbooster.herokuapp.com', '127.0.0.1']
 
 
 MEDIA_URL = '/media/'
@@ -48,7 +48,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,6 +55,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE_CLASSES = (
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+)
 
 ROOT_URLCONF = 'recycling_booster.urls'
 
