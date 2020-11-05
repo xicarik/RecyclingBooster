@@ -141,6 +141,9 @@ def addpoint_page(request):
     return render(request, 'addpoint.html', {'form': {}, 'points': points(request.user)})
 
 def article_page(request, waste_type):
+    if waste_type < 1 or waste_type > 7:
+        messages.add_message(request, messages.ERROR, 'Страница не найдена')
+        return redirect('index')
     article = Article.objects.filter(waste_type=waste_type)[0]
     comments = Comment.objects.filter(waste_type=waste_type)
     recyclespots = RecycleSpot.objects.filter(waste_type=waste_type)
