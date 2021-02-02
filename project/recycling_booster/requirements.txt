@@ -8,7 +8,7 @@ Augmentor==0.2.8
 backcall==0.2.0
 Beaker==1.11.0
 beautifulsoup4==4.9.3
-bleach==3.2.1
+bleach==3.3.0
 blis==0.4.1
 btrfsutil==1.2.0
 CacheControl==0.12.6
