@@ -139,7 +139,7 @@ six==1.15.0
 sklearn==0.0
 soupsieve==2.0.1
 spacy==2.3.2
-sqlparse==0.4.1
+sqlparse==0.4.2
 srsly==1.0.2
 sympy==1.6.2
 team==1.0
