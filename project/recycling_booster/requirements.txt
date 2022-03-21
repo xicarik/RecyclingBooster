@@ -45,7 +45,7 @@ fastprogress==1.0.0
 filelock==3.0.12
 future==0.18.2
 gmpy2==2.1.0b5
-guake==3.7.0
+guake==3.8.5
 gufw==20.4.0
 gunicorn==20.0.4
 html5lib==1.1
